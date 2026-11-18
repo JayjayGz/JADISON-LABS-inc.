@@ -1,28 +1,23 @@
 package Implementation.Application;
 
-import Implementation.Domain.HealthcareProfessional;
-import Implementation.Domain.HealthcareProfessionalCatalog;
-import Implementation.Domain.TimeSlot;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 import Implementation.Domain.*;
-import java.util.List;
-import java.util.UUID;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
 
 public class AppointmentController {
     private final HealthcareProfessionalCatalog professionalCatalog;
+    private final ClinicCatalog clinicCatalog;
 
-    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog){
+    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog, ClinicCatalog clinicCatalog){
         this.professionalCatalog = professionalCatalog;
+        this.clinicCatalog = clinicCatalog;
     }
 
     public List<TimeSlot> requestAvailability(UUID professionalID, UUID clinicID, LocalDate startDate){
@@ -34,13 +29,11 @@ public class AppointmentController {
 
 
     //-------------------------------------------- IMPORT FROM CSV --------------------------------------------
-    private List<HealthcareProfessional> healthcareProfessionals;
-    private List<Clinic> clinics;
 
-    public AppointmentController(List<HealthcareProfessional> healthcareProfessionals, List<Clinic> clinics){
-        this.healthcareProfessionals = healthcareProfessionals;
-        this.clinics = clinics;
-    }
+    // public AppointmentController(List<HealthcareProfessional> healthcareProfessionals, List<Clinic> clinics){
+    //     this.healthcareProfessionals = healthcareProfessionals;
+    //     this.clinics = clinics;
+    // }
 
     public void importAvailability(String filePath, String clinicID){
 
@@ -48,12 +41,7 @@ public class AppointmentController {
         UUID clinicUUID = UUID.fromString(clinicID);
         Clinic clinic = null;
 
-        for(Clinic c: clinics){
-            if(c.getClinicID().equals(clinicUUID)){
-                clinic = c;
-                break;
-            }
-        }
+        clinic = clinicCatalog.findByID(clinicUUID);
         if (clinic == null){
             System.out.println("Clinic not found");
             return;
@@ -67,28 +55,25 @@ public class AppointmentController {
                 String[] data = line.split(",");
                 String firstName = data[0].trim();
                 String lastName = data[1].trim();
-                Specialties specialty = Specialties.valueOf(data[2].trim());
-                LocalDate date = LocalDate.parse(data[3].trim());
-                LocalTime startTime = LocalTime.parse(data[4].trim());
-                LocalTime endTime = LocalTime.parse(data[5].trim());
+                UUID professionalID = UUID.fromString(data[2].trim());
+                Specialties specialty = Specialties.valueOf(data[3].trim());
+                LocalDate date = LocalDate.parse(data[4].trim());
+                LocalTime startTime = LocalTime.parse(data[5].trim());
+                LocalTime endTime = LocalTime.parse(data[6].trim());
 
-                HealthcareProfessional healthcareProfessional = null;
-                for(HealthcareProfessional hp: healthcareProfessionals){
-                    if(hp.getFirstName().equals(firstName) && hp.getLastName().equals(lastName)){
-                        healthcareProfessional = hp;
-                        break;
-                    }
+                HealthcareProfessional professional;
+                
+                try{
+                    professional = professionalCatalog.findByID(professionalID);
+                } catch (IllegalArgumentException e){
+                    System.out.println("healthcare Professional not found: " + professionalID);
+                    continue; //Skipping the line
                 }
 
-                //if we dont find the healthcare professional, we create a new one
-                if(healthcareProfessional == null){
-                    healthcareProfessional = new HealthcareProfessional(firstName, lastName);
-                    healthcareProfessionals.add(healthcareProfessional);
-                }
-                healthcareProfessional.addSpecialty(specialty);
+                professional.addSpecialty(specialty);
 
                 TimeSlot timeSlot = new TimeSlot(LocalDateTime.of(date, startTime), LocalDateTime.of(date, endTime), clinic);
-                healthcareProfessional.getSchedule().addTimeSlot(timeSlot);
+                professional.getSchedule().addTimeSlot(timeSlot);
             }
            
             } 
