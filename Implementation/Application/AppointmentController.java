@@ -1,36 +1,29 @@
 package Implementation.Application;
 
-import Implementation.Domain.Appointment;
-import Implementation.Domain.Clinic;
-import Implementation.Domain.Specialties;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+import java.util.Objects;
 
+import Implementation.Domain.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalTime;
-import Implementation.Domain.HealthcareProfessional;
-import Implementation.Domain.HealthcareProfessionalCatalog;
-import Implementation.Domain.Patient;
-import Implementation.Domain.TimeSlot;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 public class AppointmentController {
     private final HealthcareProfessionalCatalog professionalCatalog;
-    private final List<Clinic> clinics;
+    private final ClinicCatalog clinicCatalog;
 
-    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog) {
+    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog){
         this.professionalCatalog = professionalCatalog;
-        this.clinics = List.of();
+        this.clinicCatalog = new ClinicCatalog();
     }
 
-    public AppointmentController(List<HealthcareProfessional> healthcareProfessionals, List<Clinic> clinics) {
-        this.professionalCatalog = new HealthcareProfessionalCatalog(healthcareProfessionals);
-        this.clinics = clinics;
+    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog, ClinicCatalog clinicCatalog){
+        this.professionalCatalog = professionalCatalog;
+        this.clinicCatalog = clinicCatalog;
     }
 
     public List<TimeSlot> requestAvailability(UUID professionalID, UUID clinicID, LocalDate startDate){
@@ -39,6 +32,8 @@ public class AppointmentController {
         return professional.getSchedule().getAvailableSlots(clinicID, startDate);
     }
     
+
+
     public Appointment bookAppointment(Patient patient, UUID professionalID, UUID clinicID, LocalDateTime startDateTime, String medicalService){
         Objects.requireNonNull(patient, "Patient cannot be null");
         Objects.requireNonNull(professionalID, "Professional ID cannot be null");
@@ -67,18 +62,20 @@ public class AppointmentController {
         return appointment;
     }
 
+    //-------------------------------------------- IMPORT FROM CSV --------------------------------------------
+
+    // public AppointmentController(List<HealthcareProfessional> healthcareProfessionals, List<Clinic> clinics){
+    //     this.healthcareProfessionals = healthcareProfessionals;
+    //     this.clinics = clinics;
+    // }
+
     public void importAvailability(String filePath, String clinicID){
 
         //first i need to find the clinic associated with the import
         UUID clinicUUID = UUID.fromString(clinicID);
         Clinic clinic = null;
 
-        for(Clinic c: clinics){
-            if(c.getClinicID().equals(clinicUUID)){
-                clinic = c;
-                break;
-            }
-        }
+        clinic = clinicCatalog.findByID(clinicUUID);
         if (clinic == null){
             System.out.println("Clinic not found");
             return;
@@ -92,28 +89,25 @@ public class AppointmentController {
                 String[] data = line.split(",");
                 String firstName = data[0].trim();
                 String lastName = data[1].trim();
-                Specialties specialty = Specialties.valueOf(data[2].trim());
-                LocalDate date = LocalDate.parse(data[3].trim());
-                LocalTime startTime = LocalTime.parse(data[4].trim());
-                LocalTime endTime = LocalTime.parse(data[5].trim());
+                UUID professionalID = UUID.fromString(data[2].trim());
+                Specialties specialty = Specialties.valueOf(data[3].trim());
+                LocalDate date = LocalDate.parse(data[4].trim());
+                LocalTime startTime = LocalTime.parse(data[5].trim());
+                LocalTime endTime = LocalTime.parse(data[6].trim());
 
-                HealthcareProfessional healthcareProfessional = null;
-                for(HealthcareProfessional hp: professionalCatalog.getProfessionals()){
-                    if(hp.getFirstName().equals(firstName) && hp.getLastName().equals(lastName)){
-                        healthcareProfessional = hp;
-                        break;
-                    }
+                HealthcareProfessional professional;
+                
+                try{
+                    professional = professionalCatalog.findByID(professionalID);
+                } catch (IllegalArgumentException e){
+                    System.out.println("healthcare Professional not found: " + professionalID);
+                    continue; //Skipping the line
                 }
 
-                //if we dont find the healthcare professional, we create a new one
-                if(healthcareProfessional == null){
-                    healthcareProfessional = new HealthcareProfessional(firstName, lastName);
-                    professionalCatalog.addProfessional(healthcareProfessional);
-                }
-                healthcareProfessional.addSpecialty(specialty);
+                professional.addSpecialty(specialty);
 
                 TimeSlot timeSlot = new TimeSlot(LocalDateTime.of(date, startTime), LocalDateTime.of(date, endTime), clinic);
-                healthcareProfessional.getSchedule().addTimeSlot(timeSlot);
+                professional.getSchedule().addTimeSlot(timeSlot);
             }
            
             } 
