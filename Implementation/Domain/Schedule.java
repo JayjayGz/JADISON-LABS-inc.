@@ -78,6 +78,15 @@ public class Schedule {
         timeSlots.remove(timeSlot);
     }
 
+    public TimeSlot findTimeSlot(UUID clinicID, LocalDateTime startDateTime) {
+        return timeSlots.stream()
+                .filter(slot -> slot.getClinicID().equals(clinicID))
+                .filter(slot -> slot.getStartDateTime().equals(startDateTime))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Time slot not found for clinic " + clinicID + " at " + startDateTime));
+    }
+
     // Filter time slot chronologically, per clinic, and from the provided starting date
     public List<TimeSlot> getAvailableSlots(UUID clinicID, LocalDate startDate) {
         return getTimeSlots().stream()
