@@ -81,7 +81,7 @@ public class Schedule {
     // Filter time slot chronologically, per clinic, and from the provided starting date
     public List<TimeSlot> getAvailableSlots(UUID clinicID, LocalDate startDate) {
         return getTimeSlots().stream()
-                .filter(timeSlot -> timeSlot.getStartDateTime().isBefore(timeSlot.getEndDateTime()))
+                .filter(timeslot -> !timeslot.getStartDateTime().toLocalDate().isBefore(startDate))
                 .filter(timeSlot -> timeSlot.getClinicID().equals(clinicID))
                 .filter(TimeSlot::isAvailable)
                 .sorted(Comparator.comparing(TimeSlot::getStartDateTime))
