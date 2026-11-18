@@ -1,29 +1,31 @@
-package Implementation;
+package Implementation.Domain;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
-public class Client {
-
-    //attributes
+public class Patient {
+    // attributes
     private String firstName;
     private String lastName;
     private String insuranceNumber;
-    private Date dateOfBirth;
-    private UUID clientID;
+    private LocalDate dateOfBirth;
+    private final UUID patientID;
     private String phoneNumber;
+    private final Set<Appointment> appointments = new HashSet<>();
 
-    //constructor
-    public Client(String firstName, String lastName, String insuranceNumber, Date dateOfBirth, UUID clientID, String phoneNumber){
+    // constructor
+    public Patient(String firstName, String lastName, String insuranceNumber, LocalDate dateOfBirth, UUID clientID, String phoneNumber){
         this.firstName = firstName;
         this.lastName = lastName;
         this.insuranceNumber = insuranceNumber;
         this.dateOfBirth = dateOfBirth;
-        this.clientID = clientID;
+        this.patientID = clientID;
         this.phoneNumber = phoneNumber;
     }
 
-    //getters
+    // getters
     public String getFirstName(){
         return this.firstName;
     }
@@ -36,41 +38,37 @@ public class Client {
         return this.insuranceNumber;
     }
 
-    public Date getDateOfBirth(){
+    public LocalDate getDateOfBirth(){
         return this.dateOfBirth;
     }
 
-    public UUID getClientID(){
-        return this.clientID;
+    public UUID getPatientID(){
+        return this.patientID;
     }
 
     public String getPhoneNumber(){
         return this.phoneNumber;
     }
 
-    //setters
+    // setters
 
     public void setFirstName(String firstName){
         this.firstName = firstName;
     }
 
-     public void setLastName(String lastName){
+    public void setLastName(String lastName){
         this.lastName = lastName;
     }
     
-     public void setInsuranceNumber(String insuranceNumber){
+    public void setInsuranceNumber(String insuranceNumber){
         this.insuranceNumber = insuranceNumber;
     }
     
-     public void setDateOfBirth(Date dateOfBirth){
+    public void setDateOfBirth(LocalDate dateOfBirth){
         this.dateOfBirth = dateOfBirth;
     }
     
-     public void setClientID(UUID clientID){
-        this.clientID = clientID;
-    }
-    
-     public void setPhoneNumber(String phoneNumber){
+    public void setPhoneNumber(String phoneNumber){
         this.phoneNumber = phoneNumber;
     }
     
