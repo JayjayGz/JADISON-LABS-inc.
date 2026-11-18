@@ -8,8 +8,8 @@ public class HealthcareProfessional {
     private String firstName;
     private String lastName;
     private final UUID professionalID;
-    private Set<Specialties> specialties;
-    private Schedule schedule;
+    private final Set<Specialties> specialties;
+    private final Schedule schedule;
 
 
     // Constructor for exporting csv data
@@ -50,8 +50,8 @@ public class HealthcareProfessional {
         return this.schedule;
     }
 
-    //setters
 
+    //setters
     public void setFirstName(String firstName){
         this.firstName = firstName;
     }
@@ -60,9 +60,6 @@ public class HealthcareProfessional {
         this.lastName = lastName;
     }
 
-    public void setSpecialties(Set<Specialties> specialties){
-        this.specialties = specialties;
-    }
 
     public void addSpecialty(Specialties specialty){
         this.specialties.add(specialty);
@@ -70,9 +67,5 @@ public class HealthcareProfessional {
 
     public void removeSpecialty(Specialties specialty){
         this.specialties.remove(specialty);
-    }
-
-    public void setSchedule(Schedule schedule){
-        this.schedule = schedule;
     }
 }
