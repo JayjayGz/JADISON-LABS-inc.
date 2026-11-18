@@ -1,6 +1,8 @@
 package Implementation.Domain;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class Patient {
@@ -8,12 +10,13 @@ public class Patient {
     private String firstName;
     private String lastName;
     private String insuranceNumber;
-    private Date dateOfBirth;
-    private UUID patientID;
+    private LocalDate dateOfBirth;
+    private final UUID patientID;
     private String phoneNumber;
+    private final Set<Appointment> appointments = new HashSet<>();
 
     // constructor
-    public Patient(String firstName, String lastName, String insuranceNumber, Date dateOfBirth, UUID clientID, String phoneNumber){
+    public Patient(String firstName, String lastName, String insuranceNumber, LocalDate dateOfBirth, UUID clientID, String phoneNumber){
         this.firstName = firstName;
         this.lastName = lastName;
         this.insuranceNumber = insuranceNumber;
@@ -35,7 +38,7 @@ public class Patient {
         return this.insuranceNumber;
     }
 
-    public Date getDateOfBirth(){
+    public LocalDate getDateOfBirth(){
         return this.dateOfBirth;
     }
 
@@ -53,23 +56,19 @@ public class Patient {
         this.firstName = firstName;
     }
 
-     public void setLastName(String lastName){
+    public void setLastName(String lastName){
         this.lastName = lastName;
     }
     
-     public void setInsuranceNumber(String insuranceNumber){
+    public void setInsuranceNumber(String insuranceNumber){
         this.insuranceNumber = insuranceNumber;
     }
     
-     public void setDateOfBirth(Date dateOfBirth){
+    public void setDateOfBirth(LocalDate dateOfBirth){
         this.dateOfBirth = dateOfBirth;
     }
     
-     public void setPatientID(UUID patientID){
-        this.patientID = patientID;
-    }
-    
-     public void setPhoneNumber(String phoneNumber){
+    public void setPhoneNumber(String phoneNumber){
         this.phoneNumber = phoneNumber;
     }
     

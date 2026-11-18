@@ -7,7 +7,7 @@ public class AdministrativeStaff {
     //attributes
     private String firstName;
     private String lastName;
-    private UUID adminStaffID;
+    private final UUID adminStaffID;
     private String password;
 
     //constructor
@@ -16,6 +16,13 @@ public class AdministrativeStaff {
         this.lastName = lastName;
         this.adminStaffID = adminStaffID;
         this.password = password;
+    }
+
+    public AdministrativeStaff(String firstName, String lastName, String password){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.adminStaffID = UUID.randomUUID();
     }
 
     //getters
@@ -42,10 +49,6 @@ public class AdministrativeStaff {
 
     public void setLastName(String lastName){
         this.lastName = lastName;
-    }
-
-    public void setAdminStaffID(UUID adminStaffID){
-        this.adminStaffID = adminStaffID;
     }
 
     public void setPassword(String password){

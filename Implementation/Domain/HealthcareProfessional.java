@@ -7,7 +7,7 @@ public class HealthcareProfessional {
     //attributes
     private String firstName;
     private String lastName;
-    private UUID professionalID;
+    private final UUID professionalID;
     private Set<Specialties> specialties;
     private Schedule schedule;
 
@@ -60,10 +60,6 @@ public class HealthcareProfessional {
         this.lastName = lastName;
     }
 
-    public void setProfessionalID(UUID professionalID){
-        this.professionalID = professionalID;
-    }
-
     public void setSpecialties(Set<Specialties> specialties){
         this.specialties = specialties;
     }
@@ -79,7 +75,4 @@ public class HealthcareProfessional {
     public void setSchedule(Schedule schedule){
         this.schedule = schedule;
     }
-
-
-
 }

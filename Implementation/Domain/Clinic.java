@@ -8,7 +8,7 @@ import java.util.UUID;
 public class Clinic {
 
     //attributes
-    private UUID clinicID;
+    private final UUID clinicID;
     private String name;
     private Coordinates location;
     private List<UUID> healthcareProfessionals;
@@ -16,7 +16,7 @@ public class Clinic {
     private List<UUID> administrativeStaff;
 
     //constructor
-    public Clinic(String name, List<String> services, Coordinates location, List<UUID> healthcareProfessionals, List<UUID> patients, List<UUID> administrativeStaff){
+    public Clinic(String name, Coordinates location, List<UUID> healthcareProfessionals, List<UUID> patients, List<UUID> administrativeStaff){
         this.clinicID = UUID.randomUUID();
         this.name = name;
         this.location = location;
@@ -69,9 +69,5 @@ public class Clinic {
 
     public void setAdministrativeStaff(List<UUID> administrativeStaff){
         this.administrativeStaff = administrativeStaff;
-    }
-
-    public void setClinicID(UUID clinicID) {
-        this.clinicID = clinicID;
     }
 }
