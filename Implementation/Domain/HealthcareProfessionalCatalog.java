@@ -11,6 +11,14 @@ public class HealthcareProfessionalCatalog {
         this.professionals = new ArrayList<>();
     }
 
+    public HealthcareProfessionalCatalog(List<HealthcareProfessional> professionals) {
+        this.professionals = professionals;
+    }
+
+    public List<HealthcareProfessional> getProfessionals() {
+        return List.copyOf(professionals);
+    }
+
     public void addProfessional(HealthcareProfessional professional){
         this.professionals.add(professional);
     }
