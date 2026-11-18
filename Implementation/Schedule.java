@@ -21,10 +21,10 @@ public class Schedule {
         List<TimeSlot> availableSlots = new ArrayList<>();
 
         for(TimeSlot slot: timeSlots){
-            boolean matchesClinic = slot.getClinic().getClinicID().equals(clinicID);
-            boolean matchesDate = !slot.getStartDateTime().toLocalDate().isBefore(startDate);
 
-            if(matchesClinic && matchesDate && slot.isAvailable()){
+            if(slot.getClinic().getClinicID().equals(clinicID) 
+                && !slot.getStartDateTime().toLocalDate().isBefore(startDate) 
+                && slot.isAvailable()){
                 availableSlots.add(slot);
             }
 
