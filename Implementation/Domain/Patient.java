@@ -1,29 +1,28 @@
-package Implementation;
+package Implementation.Domain;
 
 import java.util.Date;
 import java.util.UUID;
 
-public class Client {
-
-    //attributes
+public class Patient {
+    // attributes
     private String firstName;
     private String lastName;
     private String insuranceNumber;
     private Date dateOfBirth;
-    private UUID clientID;
+    private UUID patientID;
     private String phoneNumber;
 
-    //constructor
-    public Client(String firstName, String lastName, String insuranceNumber, Date dateOfBirth, UUID clientID, String phoneNumber){
+    // constructor
+    public Patient(String firstName, String lastName, String insuranceNumber, Date dateOfBirth, UUID clientID, String phoneNumber){
         this.firstName = firstName;
         this.lastName = lastName;
         this.insuranceNumber = insuranceNumber;
         this.dateOfBirth = dateOfBirth;
-        this.clientID = clientID;
+        this.patientID = clientID;
         this.phoneNumber = phoneNumber;
     }
 
-    //getters
+    // getters
     public String getFirstName(){
         return this.firstName;
     }
@@ -40,15 +39,15 @@ public class Client {
         return this.dateOfBirth;
     }
 
-    public UUID getClientID(){
-        return this.clientID;
+    public UUID getPatientID(){
+        return this.patientID;
     }
 
     public String getPhoneNumber(){
         return this.phoneNumber;
     }
 
-    //setters
+    // setters
 
     public void setFirstName(String firstName){
         this.firstName = firstName;
@@ -66,8 +65,8 @@ public class Client {
         this.dateOfBirth = dateOfBirth;
     }
     
-     public void setClientID(UUID clientID){
-        this.clientID = clientID;
+     public void setPatientID(UUID patientID){
+        this.patientID = patientID;
     }
     
      public void setPhoneNumber(String phoneNumber){

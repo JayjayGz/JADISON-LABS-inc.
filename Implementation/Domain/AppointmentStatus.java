@@ -1,4 +1,4 @@
-package Implementation;
+package Implementation.Domain;
 
 public enum AppointmentStatus {
     CONFIRMED,

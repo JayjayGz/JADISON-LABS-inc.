@@ -1,15 +1,17 @@
-package Implementation;
+package Implementation.Domain;
+
+import java.util.UUID;
 
 public class AdministrativeStaff {
 
     //attributes
     private String firstName;
     private String lastName;
-    private String adminStaffID;
+    private UUID adminStaffID;
     private String password;
 
     //constructor
-    public AdministrativeStaff(String firstName, String lastName, String adminStaffID, String password){
+    public AdministrativeStaff(String firstName, String lastName, UUID adminStaffID, String password){
         this.firstName = firstName;
         this.lastName = lastName;
         this.adminStaffID = adminStaffID;
@@ -25,7 +27,7 @@ public class AdministrativeStaff {
         return this.lastName;
     }
 
-    public String getAdminStaffID(){
+    public UUID getAdminStaffID(){
         return this.adminStaffID;
     }
 
@@ -42,7 +44,7 @@ public class AdministrativeStaff {
         this.lastName = lastName;
     }
 
-    public void setAdminStaffID(String adminStaffID){
+    public void setAdminStaffID(UUID adminStaffID){
         this.adminStaffID = adminStaffID;
     }
 
