@@ -1,7 +1,7 @@
 package Implementation.Application;
 
-import Implementation.HealthcareProfessionalCatalog;
 import Implementation.Domain.HealthcareProfessional;
+import Implementation.Domain.HealthcareProfessionalCatalog;
 import Implementation.Domain.TimeSlot;
 
 import java.time.LocalDate;
