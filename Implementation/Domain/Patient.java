@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Objects;
 
 public class Patient {
     // attributes
@@ -72,5 +73,11 @@ public class Patient {
         this.phoneNumber = phoneNumber;
     }
     
+    public void addAppointment(Appointment appointment){
+        appointments.add(Objects.requireNonNull(appointment, "Appointment cannot be null"));
+    }
     
+    public Set<Appointment> getAppointments(){
+        return Set.copyOf(appointments);
+    }
 }
