@@ -2,32 +2,42 @@ package Implementation.Catalog;
 
 import Implementation.Domain.HealthcareProfessional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class HealthcareProfessionalCatalog {
-    private final Map<UUID, HealthcareProfessional> professionals = new HashMap<>();
+    private final List<HealthcareProfessional> professionals = new ArrayList<>();
 
     public void add(HealthcareProfessional professional) {
-        Objects.requireNonNull(professional, "Clinic cannot be null");
-        UUID id = Objects.requireNonNull(professional.getProfessionalID());
-
-        if (professionals.putIfAbsent(id, professional) != null) {
-            throw new IllegalArgumentException("Professional already exists");
-        }
-    }
-
-    public List<HealthcareProfessional> getAll(){
-        return List.copyOf(this.professionals.values());
-    }
-
-    public HealthcareProfessional findByID(UUID professionalID){
-        HealthcareProfessional professional = professionals.get(professionalID);
-
         if (professional == null) {
-            throw new IllegalArgumentException("Healthcare professional not found: " + professionalID);
+            throw new IllegalArgumentException("Professional cannot be null.");
         }
 
-        return professional;
+        boolean exists = professionals.stream()
+                .anyMatch(p -> p.getProfessionalID()
+                        .equals(professional.getProfessionalID()));
+
+        if (exists) {
+            throw new IllegalArgumentException("Professional already exists.");
+        }
+
+        professionals.add(professional);
     }
 
+    public HealthcareProfessional findByID(UUID professionalID) {
+        return professionals.stream()
+                .filter(p -> p.getProfessionalID().equals(professionalID))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Professional not found: " + professionalID));
+    }
+
+    public void remove(UUID professionalID) {
+        HealthcareProfessional professional = findByID(professionalID);
+        professionals.remove(professional);
+    }
+
+    public List<HealthcareProfessional> getAll() {
+        return List.copyOf(professionals);
+    }
 }
