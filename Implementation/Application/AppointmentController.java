@@ -1,22 +1,26 @@
 package Implementation.Application;
 
-import Implementation.Domain.Appointment;
-import Implementation.Domain.HealthcareProfessional;
-import Implementation.Domain.HealthcareProfessionalCatalog;
-import Implementation.Domain.Patient;
-import Implementation.Domain.TimeSlot;
+import Implementation.Catalog.AppointmentCatalog;
+import Implementation.Catalog.ClinicCatalog;
+import Implementation.Domain.*;
+import Implementation.Catalog.HealthcareProfessionalCatalog;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class AppointmentController {
     private final HealthcareProfessionalCatalog professionalCatalog;
+    private final AppointmentCatalog appointmentCatalog;
+    private final ClinicCatalog clinicCatalog;
 
-    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog){
+    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog, ClinicCatalog clinicCatalog, AppointmentCatalog appointmentCatalog) {
         this.professionalCatalog = professionalCatalog;
+        this.clinicCatalog = clinicCatalog;
+        this.appointmentCatalog = appointmentCatalog;
     }
 
     public List<TimeSlot> requestAvailability(UUID professionalID, UUID clinicID, LocalDate startDate){
@@ -24,7 +28,7 @@ public class AppointmentController {
 
         return professional.getSchedule().getAvailableSlots(clinicID, startDate);
     }
-    
+
     public Appointment bookAppointment(Patient patient, UUID professionalID, UUID clinicID, LocalDateTime startDateTime, String medicalService){
         Objects.requireNonNull(patient, "Patient cannot be null");
         Objects.requireNonNull(professionalID, "Professional ID cannot be null");
@@ -51,5 +55,12 @@ public class AppointmentController {
         patient.addAppointment(appointment);
 
         return appointment;
+    }
+
+    public void createAvailability(UUID professionalID, UUID clinicID, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Recurrence recurrence) {
+        Clinic clinic = clinicCatalog.findByID(clinicID);
+        Schedule schedule = professionalCatalog.findByID(professionalID).getSchedule();
+
+        schedule.createAvailability(clinic, startDate, endDate, startTime, endTime, recurrence);
     }
 }
