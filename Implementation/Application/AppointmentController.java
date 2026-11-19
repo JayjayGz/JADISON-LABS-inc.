@@ -13,13 +13,6 @@ import java.util.UUID;
 import java.util.Objects;
 
 import Implementation.Domain.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.time.LocalTime;
-import java.time.LocalDateTime;
-import java.io.FileWriter;
 
 public class AppointmentController {
     private final HealthcareProfessionalCatalog professionalCatalog;
@@ -65,8 +58,6 @@ public class AppointmentController {
 
         return appointment;
     }
-
-
 
     public void createAvailability(UUID professionalID, UUID clinicID, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Recurrence recurrence) {
         Clinic clinic = clinicCatalog.findByID(clinicID);
