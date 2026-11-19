@@ -1,6 +1,13 @@
 package Implementation.Application;
 
+import Implementation.Catalog.AppointmentCatalog;
+import Implementation.Catalog.ClinicCatalog;
+import Implementation.Domain.*;
+import Implementation.Catalog.HealthcareProfessionalCatalog;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.Objects;
@@ -16,16 +23,13 @@ import java.io.FileWriter;
 
 public class AppointmentController {
     private final HealthcareProfessionalCatalog professionalCatalog;
+    private final AppointmentCatalog appointmentCatalog;
     private final ClinicCatalog clinicCatalog;
 
-    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog){
-        this.professionalCatalog = professionalCatalog;
-        this.clinicCatalog = new ClinicCatalog();
-    }
-
-    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog, ClinicCatalog clinicCatalog){
+    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog, ClinicCatalog clinicCatalog, AppointmentCatalog appointmentCatalog) {
         this.professionalCatalog = professionalCatalog;
         this.clinicCatalog = clinicCatalog;
+        this.appointmentCatalog = appointmentCatalog;
     }
 
     public List<TimeSlot> requestAvailability(UUID professionalID, UUID clinicID, LocalDate startDate){
@@ -33,8 +37,6 @@ public class AppointmentController {
 
         return professional.getSchedule().getAvailableSlots(clinicID, startDate);
     }
-    
-
 
     public Appointment bookAppointment(Patient patient, UUID professionalID, UUID clinicID, LocalDateTime startDateTime, String medicalService){
         Objects.requireNonNull(patient, "Patient cannot be null");
@@ -73,7 +75,7 @@ public class AppointmentController {
 
     public void importAvailabilityFromCSV(String filePath, String clinicID){
 
-        //first i need to find the clinic 
+        //first i need to find the clinic
         UUID clinicUUID = UUID.fromString(clinicID);
         Clinic clinic = null;
 
@@ -85,7 +87,7 @@ public class AppointmentController {
 
         try (BufferedReader b = new BufferedReader(new FileReader(filePath))){
             String line;
-            b.readLine(); 
+            b.readLine();
 
             while((line = b.readLine()) != null){
                 String[] data = line.split(",");
@@ -98,7 +100,7 @@ public class AppointmentController {
                 LocalTime endTime = LocalTime.parse(data[4].trim());
 
                 HealthcareProfessional professional;
-                
+
                 try{
                     professional = professionalCatalog.findByID(professionalID);
                 } catch (IllegalArgumentException e){
@@ -111,8 +113,8 @@ public class AppointmentController {
                 TimeSlot timeSlot = new TimeSlot(LocalDateTime.of(date, startTime), LocalDateTime.of(date, endTime), clinic);
                 professional.getSchedule().addTimeSlot(timeSlot);
             }
-           
-            } 
+
+            }
             catch (IOException e){
                 System.out.println("Error reading the file: " + e.getMessage());
         }
@@ -143,6 +145,13 @@ public class AppointmentController {
         }catch (IllegalArgumentException e){
             System.out.println("Healthcare Professional not found: " + professionalID);
         }
-    
+
+    }
+
+    public void createAvailability(UUID professionalID, UUID clinicID, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Recurrence recurrence) {
+        Clinic clinic = clinicCatalog.findByID(clinicID);
+        Schedule schedule = professionalCatalog.findByID(professionalID).getSchedule();
+
+        schedule.createAvailability(clinic, startDate, endDate, startTime, endTime, recurrence);
     }
 }
