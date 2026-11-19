@@ -1,30 +1,39 @@
 package Implementation.Application;
 
+import Implementation.Catalog.AppointmentCatalog;
+import Implementation.Catalog.ClinicCatalog;
+import Implementation.Catalog.HealthcareProfessionalCatalog;
+
+import Implementation.Domain.Appointment;
+import Implementation.Domain.Clinic;
+import Implementation.Domain.HealthcareProfessional;
+import Implementation.Domain.Patient;
+import Implementation.Domain.Recurrence;
+import Implementation.Domain.Schedule;
+import Implementation.Domain.Specialties;
+import Implementation.Domain.TimeSlot;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.Objects;
 
-import Implementation.Domain.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.time.LocalTime;
-import java.time.LocalDateTime;
 import java.io.FileWriter;
 
 public class AppointmentController {
     private final HealthcareProfessionalCatalog professionalCatalog;
+    private final AppointmentCatalog appointmentCatalog;
     private final ClinicCatalog clinicCatalog;
 
-    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog){
+    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog, ClinicCatalog clinicCatalog, AppointmentCatalog appointmentCatalog) {
         this.professionalCatalog = professionalCatalog;
-        this.clinicCatalog = new ClinicCatalog();
-    }
-
-    public AppointmentController(HealthcareProfessionalCatalog professionalCatalog, ClinicCatalog clinicCatalog){
-        this.professionalCatalog = professionalCatalog;
+        this.appointmentCatalog = appointmentCatalog;
         this.clinicCatalog = clinicCatalog;
     }
 
@@ -60,6 +69,7 @@ public class AppointmentController {
         Appointment appointment = new Appointment(medicalService, slot, patient);
         slot.addAppointment(appointment);
         patient.addAppointment(appointment);
+        appointmentCatalog.addAppointment(appointment);
 
         return appointment;
     }
@@ -144,5 +154,12 @@ public class AppointmentController {
             System.out.println("Healthcare Professional not found: " + professionalID);
         }
     
+    }
+
+    public void createAvailability(UUID professionalID, UUID clinicID, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Recurrence recurrence) {
+        Clinic clinic = clinicCatalog.findByID(clinicID);
+        Schedule schedule = professionalCatalog.findByID(professionalID).getSchedule();
+
+        schedule.createAvailability(clinic, startDate, endDate, startTime, endTime, recurrence);
     }
 }
