@@ -1,9 +1,7 @@
 package Implementation.UI;
 
 import Implementation.Application.AppointmentController;
-import Implementation.Catalog.AppointmentCatalog;
-import Implementation.Catalog.ClinicCatalog;
-import Implementation.Catalog.HealthcareProfessionalCatalog;
+import Implementation.Catalog.*;
 import Implementation.Domain.*;
 import Implementation.Domain.Utils.Coordinates;
 
@@ -183,7 +181,7 @@ public class Main {
                 new ArrayList<>()
         );
 
-        HealthcareProfessional professional = new HealthcareProfessional("Amélie", "Tremblay");
+        HealthcareProfessional professional = new HealthcareProfessional("Amélie", "Tremblay", Specialties.FAMILY_MEDICINE);
 
         LocalDate date = LocalDate.now().plusDays(1);
 

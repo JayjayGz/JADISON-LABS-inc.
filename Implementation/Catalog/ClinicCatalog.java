@@ -2,37 +2,43 @@ package Implementation.Catalog;
 
 import Implementation.Domain.Clinic;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class ClinicCatalog {
-    private final Map<UUID, Clinic> clinics = new HashMap<>();
+    private final List<Clinic> clinics =
+            new ArrayList<>();
 
     public void add(Clinic clinic) {
-        Objects.requireNonNull(clinic, "Clinic cannot be null");
-        UUID id = Objects.requireNonNull(clinic.getClinicID());
-
-        if (clinics.putIfAbsent(id, clinic) != null) {
-            throw new IllegalArgumentException("Clinic already exists");
+        if (clinic == null) {
+            throw new IllegalArgumentException("Clinic cannot be null.");
         }
+
+        boolean exists = clinics.stream()
+                .anyMatch(p -> p.getClinicID()
+                        .equals(clinic.getClinicID()));
+
+        if (exists) {
+            throw new IllegalArgumentException("Clinic already exists.");
+        }
+
+        clinics.add(clinic);
     }
 
     public Clinic findByID(UUID clinicID) {
-        Clinic clinic = clinics.get(clinicID);
-
-        if (clinic == null) {
-            throw new IllegalArgumentException("Clinic not found");
-        }
-
-        return clinic;
-    }
-
-    public List<Clinic> getAll() {
-        return List.copyOf(clinics.values());
+        return clinics.stream()
+                .filter(p -> p.getClinicID().equals(clinicID))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Clinic not found: " + clinicID));
     }
 
     public void remove(UUID clinicID) {
-        if (clinics.remove(clinicID) == null) {
-            throw new IllegalArgumentException("Clinic not found");
-        }
+        Clinic professional = findByID(clinicID);
+        clinics.remove(professional);
+    }
+
+    public List<Clinic> getAll() {
+        return List.copyOf(clinics);
     }
 }
